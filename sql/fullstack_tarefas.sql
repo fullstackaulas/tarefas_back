@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Tempo de geração: 03-Dez-2024 às 01:33
+-- Tempo de geração: 05-Dez-2024 às 23:44
 -- Versão do servidor: 10.4.28-MariaDB
 -- versão do PHP: 8.0.28
 
@@ -20,6 +20,36 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `fullstack_tarefas`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `projetos`
+--
+
+CREATE TABLE `projetos` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(125) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `prioridade` enum('urgente','alta','normal','baixa') NOT NULL DEFAULT 'normal',
+  `dataDeInicio` date DEFAULT NULL,
+  `dataDeConclusao` date DEFAULT NULL,
+  `status` enum('criado','analise','pronto para começar','desenvolvendo','testando','revisao','pronto para entrega','entregue') NOT NULL DEFAULT 'criado',
+  `pontos` int(11) DEFAULT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_by` int(11) DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_by` int(11) DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Extraindo dados da tabela `projetos`
+--
+
+INSERT INTO `projetos` (`id`, `nome`, `descricao`, `prioridade`, `dataDeInicio`, `dataDeConclusao`, `status`, `pontos`, `created_by`, `created_at`, `updated_by`, `updated_at`, `deleted_by`, `deleted_at`) VALUES
+(1, 'testando', NULL, 'normal', NULL, NULL, 'criado', NULL, 1, '2024-12-05 22:43:12', NULL, '2024-12-05 22:43:12', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -55,6 +85,12 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 --
 
 --
+-- Índices para tabela `projetos`
+--
+ALTER TABLE `projetos`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Índices para tabela `users`
 --
 ALTER TABLE `users`
@@ -63,6 +99,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT de tabelas despejadas
 --
+
+--
+-- AUTO_INCREMENT de tabela `projetos`
+--
+ALTER TABLE `projetos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `users`
