@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Projetos;
+use App\Models\Tarefas;
 use Illuminate\Http\Request;
 
 class ProjetosController extends Controller
@@ -17,9 +18,9 @@ class ProjetosController extends Controller
         $projeto->created_by = auth()->id();
 
 
-        if(isset($request->prioridade))
+        if (isset($request->prioridade))
             $projeto->prioridade = $request->prioridade;
-        if(isset($request->status))
+        if (isset($request->status))
             $projeto->status = $request->status;
 
 
@@ -32,10 +33,12 @@ class ProjetosController extends Controller
 
     public function consultar($id)
     {
-        $projeto = Projetos::where('id',$id)->where('created_by',auth()->id())->first();
-    //depois permitiremos a consulta de quem estiver participando do projeto;
-        if($projeto==null)
-           return response('', 404);
+        $projeto = Projetos::where('id', $id)->where('created_by', auth()->id())->first();
+        //depois permitiremos a consulta de quem estiver participando do projeto;
+        if ($projeto == null)
+            return response('', 404);
+
+        $projeto->tarefas = Tarefas::select('id', 'nome', 'prioridade', 'status')->where('id_projeto', $projeto->id)->get();
 
         return response($projeto, 200);
 
@@ -43,20 +46,20 @@ class ProjetosController extends Controller
 
     public function listar()
     {
-        $projeto = Projetos::where('created_by',auth()->id())->get();
+        $projeto = Projetos::where('created_by', auth()->id())->get();
 
-            return response($projeto, 200);
+        return response($projeto, 200);
 
     }
 
     public function deletar($id)
     {
-       $projeto = Projetos::where('id',$id)->where('created_by',auth()->id())->first();
+        $projeto = Projetos::where('id', $id)->where('created_by', auth()->id())->first();
 
-        if ($projeto==null)
+        if ($projeto == null)
             return response('', 404);
 
-        $projeto-> deleted_by = auth()->id();
+        $projeto->deleted_by = auth()->id();
         $projeto->save();
 
         $projeto->delete();
@@ -67,27 +70,69 @@ class ProjetosController extends Controller
 
     public function editarParcial(Request $request, $id)
     {
-        $projeto = Projetos::where('id',$id)->where('created_by',auth()->id())->first();
+        $projeto = Projetos::where('id', $id)->where('created_by', auth()->id())->first();
 
-        if(isset($request->nome))
+        if (isset($request->nome))
             $projeto->nome = $request->nome;
-        if(isset($request->descricao))
+        if (isset($request->descricao))
             $projeto->descricao = $request->descricao;
-        if(isset($request->dataDeInicio))
+        if (isset($request->dataDeInicio))
             $projeto->dataDeInicio = $request->dataDeInicio;
-        if(isset($request->dataDeConclusao))
+        if (isset($request->dataDeConclusao))
             $projeto->dataDeConclusao = $request->dataDeConclusao;
-        if(isset($request->pontos))
+        if (isset($request->pontos))
             $projeto->pontos = $request->pontos;
-    
+        if (isset($request->status))
+            $projeto->status = $request->status;
+        if (isset($request->prioridade))
+            $projeto->prioridade = $request->prioridade;
+
         $projeto->updated_by = auth()->id();
         $projeto->save();
 
         return response($projeto, 200);
     }
 
-    public function filtrar(Request $request){
-       
+    public function filtrar(Request $request)
+    {
+        $requestVazio = true;   
+        $projeto = Projetos::where('created_by', auth()->id());
+
+        if (isset($request->nome)) {
+            $requestVazio = false;   
+            $projeto->where('nome', 'like', "%$request->nome%");
+        }
+
+        if (isset($request->descricao)) {
+            $requestVazio = false;  
+            $projeto->where('descricao', 'like', "%$request->descricao%");
+        }
+
+        if (isset($request->prioridade)) {
+            $requestVazio = false;  
+            $projeto->where('prioridade', $request->prioridade);
+        }
+
+        if (isset($request->dataDeInicio)) {
+            $requestVazio = false;  
+            $projeto->where('dataDeInicio', '>=', $request->dataDeInicio);
+        }
+
+        if (isset($request->dataDeConclusao)) {
+            $requestVazio = false;  
+            $projeto->where('dataDeConclusao', '<=', $request->dataDeConclusao);
+        }
+
+        if (isset($request->status)) {
+            $requestVazio = false;  
+            $projeto->where('status', $request->status);
+        }
+
+        if($requestVazio == true)
+            return response('', 403);
+
+        $projeto = $projeto->get();
+
 
         return response($projeto, 200);
 
