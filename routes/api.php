@@ -13,7 +13,7 @@ use App\Http\Controllers\AuthController;
 
 Route::middleware('auth:api')->group(function(){
     
-    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'me'])->middleware('auth:api');
 
     Route::prefix('usuarios')->group(function(){
