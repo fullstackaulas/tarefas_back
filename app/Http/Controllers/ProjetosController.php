@@ -4,16 +4,39 @@ namespace App\Http\Controllers;
 use App\Models\Projetos;
 use App\Models\Tarefas;
 use Illuminate\Http\Request;
+use DateTime;
 
 class ProjetosController extends Controller
 {
+
+    public static function javascriptDateToPhpDate($data)
+    {
+        if ($data == null)
+            return null;
+        $date = new DateTime($data);
+        $date->setTimezone(new \DateTimeZone('America/Fortaleza'));
+        return $date;
+    }
+
+
     public function cadastrar(Request $request)
     {
+
+
         $projeto = new Projetos();
         $projeto->nome = $request->nome;
         $projeto->descricao = $request->descricao;
-        $projeto->dataDeInicio = $request->dataDeInicio;
-        $projeto->dataDeConclusao = $request->dataDeConclusao;
+
+        if (isset($request->prioridade))
+            $projeto->prioridade = $request->prioridade;
+
+        if (isset($request->dataDeInicio))
+            $projeto->dataDeInicio = static::javascriptDateToPhpDate($request->dataDeInicio);
+
+        if (isset($request->dataDeConclusao))
+            $projeto->dataDeConclusao = static::javascriptDateToPhpDate($request->dataDeConclusao);
+
+
         $projeto->pontos = $request->pontos;
         $projeto->created_by = auth()->id();
 
@@ -95,40 +118,40 @@ class ProjetosController extends Controller
 
     public function filtrar(Request $request)
     {
-        $requestVazio = true;   
+        $requestVazio = true;
         $projeto = Projetos::where('created_by', auth()->id());
 
         if (isset($request->nome)) {
-            $requestVazio = false;   
+            $requestVazio = false;
             $projeto->where('nome', 'like', "%$request->nome%");
         }
 
         if (isset($request->descricao)) {
-            $requestVazio = false;  
+            $requestVazio = false;
             $projeto->where('descricao', 'like', "%$request->descricao%");
         }
 
         if (isset($request->prioridade)) {
-            $requestVazio = false;  
+            $requestVazio = false;
             $projeto->where('prioridade', $request->prioridade);
         }
 
         if (isset($request->dataDeInicio)) {
-            $requestVazio = false;  
+            $requestVazio = false;
             $projeto->where('dataDeInicio', '>=', $request->dataDeInicio);
         }
 
         if (isset($request->dataDeConclusao)) {
-            $requestVazio = false;  
+            $requestVazio = false;
             $projeto->where('dataDeConclusao', '<=', $request->dataDeConclusao);
         }
 
         if (isset($request->status)) {
-            $requestVazio = false;  
+            $requestVazio = false;
             $projeto->where('status', $request->status);
         }
 
-        if($requestVazio == true)
+        if ($requestVazio == true)
             return response('', 403);
 
         $projeto = $projeto->get();
