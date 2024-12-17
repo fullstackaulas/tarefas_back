@@ -15,6 +15,7 @@ class ProjetosController extends Controller
             return null;
         $date = new DateTime($data);
         $date->setTimezone(new \DateTimeZone('America/Fortaleza'));
+        $date->modify('+3 hours');
         return $date;
     }
 
@@ -61,7 +62,7 @@ class ProjetosController extends Controller
         if ($projeto == null)
             return response('', 404);
 
-        $projeto->tarefas = Tarefas::select('id', 'nome', 'prioridade', 'status')->where('id_projeto', $projeto->id)->get();
+        $projeto->tarefas = Tarefas::select('id', 'nome', 'prioridade', 'status', 'created_at')->where('id_projeto', $projeto->id)->get();
 
         return response($projeto, 200);
 
@@ -99,10 +100,14 @@ class ProjetosController extends Controller
             $projeto->nome = $request->nome;
         if (isset($request->descricao))
             $projeto->descricao = $request->descricao;
+
         if (isset($request->dataDeInicio))
-            $projeto->dataDeInicio = $request->dataDeInicio;
+            $projeto->dataDeInicio = static::javascriptDateToPhpDate($request->dataDeInicio);
         if (isset($request->dataDeConclusao))
-            $projeto->dataDeConclusao = $request->dataDeConclusao;
+            $projeto->dataDeConclusao = static::javascriptDateToPhpDate($request->dataDeConclusao);
+
+        
+        
         if (isset($request->pontos))
             $projeto->pontos = $request->pontos;
         if (isset($request->status))
