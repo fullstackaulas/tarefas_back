@@ -69,10 +69,8 @@ class ProjetosController extends Controller
 
     public function listar()
     {
-        $projeto = Projetos::get();
-
+        $projeto = Projetos::where('created_by', auth()->id())->get();
         return response($projeto, 200);
-
     }
 
     public function deletar($id)
