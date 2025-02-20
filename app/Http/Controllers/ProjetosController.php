@@ -70,7 +70,7 @@ class ProjetosController extends Controller
 
     public function listar()
     {
-        $projeto = Projetos::where('created_by', auth()->id())->get();
+        $projeto = Projetos::get();
 
         return response($projeto, 200);
 
