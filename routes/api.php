@@ -11,6 +11,9 @@ use App\Http\Controllers\AuthController;
 
 
 
+Route::post('usuarios/cadastrarNovo', [UsuariosController::class, 'cadastrarNovo']);
+
+
 Route::middleware('auth:api')->group(function(){
     
     Route::get('logout', [AuthController::class, 'logout']);
