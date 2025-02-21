@@ -27,6 +27,26 @@ class UsuariosController extends Controller
         return response($usuario, 201);
     }
 
+    public function cadastrarNovo (Request $request)
+    {
+
+        $usuarioQtd = User::where('email', $request->email)->count();
+
+        if ($usuarioQtd > 0)
+            return response('', 409);
+
+
+        $usuario = new User();
+        $usuario->email = $request->email;
+        $usuario->name = $request->name;
+        $usuario->password = bcrypt($request->password);
+
+        $usuario->created_by = 0;
+        $usuario->save();
+
+        return response($usuario, 201);
+    }
+
 
     public function consultar($id)
     {
