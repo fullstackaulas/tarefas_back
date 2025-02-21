@@ -23,7 +23,6 @@ class ProjetosController extends Controller
     public function cadastrar(Request $request)
     {
 
-
         $projeto = new Projetos();
         $projeto->nome = $request->nome;
         $projeto->descricao = $request->descricao;
@@ -31,7 +30,7 @@ class ProjetosController extends Controller
         if (isset($request->prioridade))
             $projeto->prioridade = $request->prioridade;
 
-        if (isset($request->dataDeInicio))
+        if (isset($request->dataDeInicio)) 
             $projeto->dataDeInicio = static::javascriptDateToPhpDate($request->dataDeInicio);
 
         if (isset($request->dataDeConclusao))
@@ -70,10 +69,8 @@ class ProjetosController extends Controller
 
     public function listar()
     {
-        $projeto = Projetos::get();
-
+        $projeto = Projetos::where('created_by', auth()->id())->get();
         return response($projeto, 200);
-
     }
 
     public function deletar($id)
