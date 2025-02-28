@@ -3,6 +3,7 @@
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ProjetosController;
 use App\Http\Controllers\TarefasController;
+use App\Http\Controllers\ProjetoUsuarioController;
 
 
 use Illuminate\Http\Request;
@@ -51,6 +52,16 @@ Route::middleware('auth:api')->group(function(){
         Route::post('/filtrar', [TarefasController::class, 'filtrar']); // listar todos
 
     });
+
+
+
+    Route::prefix('projetoUsuario')->group(function(){
+        Route::post('/cadastrar', [ProjetoUsuarioController::class, 'cadastrar']); // cadastrar um dado único
+        Route::delete('/deletar/{projeto}/{usuario}', [ProjetoUsuarioController::class, 'deletar']); // deletar um unico dado
+
+    });
+
+
 
 
 });

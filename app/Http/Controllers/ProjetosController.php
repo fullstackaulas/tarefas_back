@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\Projetos;
+use App\Models\ProjetoUser;
+use App\Models\User;
 use App\Models\Tarefas;
 use Illuminate\Http\Request;
 use DateTime;
@@ -62,14 +64,26 @@ class ProjetosController extends Controller
             return response('', 404);
 
         $projeto->tarefas = Tarefas::select('id', 'nome', 'prioridade', 'status', 'created_at')->where('id_projeto', $projeto->id)->get();
+        
+        $colaboradores = ProjetoUser::select('user_id')->where('projeto_id', $id)->get();
 
+        $projeto->colaboradores = User::select('id','name', 'email')->whereIn('id', $colaboradores)->get();
         return response($projeto, 200);
 
     }
 
     public function listar()
     {
-        $projeto = Projetos::where('created_by', auth()->id())->get();
+        $projetosMencionados = ProjetoUser::select('projeto_id')
+        ->where('user_id', auth()->id())
+        ->get();
+
+
+        $projeto = Projetos::where('created_by', auth()->id())
+        ->orWhereIn('id', $projetosMencionados)
+        ->get();
+
+
         return response($projeto, 200);
     }
 
