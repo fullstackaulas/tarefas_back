@@ -186,3 +186,5 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 CREATE TABLE `fullstack_tarefas`.`projeto_user` (`user_id` INT NOT NULL , `projeto_id` INT NOT NULL , PRIMARY KEY (`user_id`, `projeto_id`)) ENGINE = InnoDB;
+
+CREATE TABLE `fullstack_tarefas`.`arquivos` (`id` INT NOT NULL AUTO_INCREMENT , `nome_original` VARCHAR(256) NOT NULL , `nome_criptografado` VARCHAR(256) NOT NULL , `caminho` VARCHAR(256) NOT NULL , `created_by` INT NOT NULL , `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_by` INT NULL , `updated_at` DATETIME on update CURRENT_TIMESTAMP NULL , `deleted_by` INT NULL , `deleted_at` DATETIME NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
