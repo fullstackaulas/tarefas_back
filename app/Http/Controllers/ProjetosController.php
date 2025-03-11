@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Arquivos;
 use App\Models\Projetos;
 use App\Models\ProjetoUser;
 use App\Models\User;
@@ -28,6 +29,7 @@ class ProjetosController extends Controller
         $projeto = new Projetos();
         $projeto->nome = $request->nome;
         $projeto->descricao = $request->descricao;
+        $projeto->id_arquivo = $request->id_arquivo;
 
         if (isset($request->prioridade))
             $projeto->prioridade = $request->prioridade;
@@ -83,6 +85,16 @@ class ProjetosController extends Controller
         ->orWhereIn('id', $projetosMencionados)
         ->get();
 
+        for($i=0;$i<count($projeto);$i++){
+            if(isset($projeto[$i]->id_arquivo) && $projeto[$i]->id_arquivo != null ){
+                $arquivo = Arquivos::where('id', $projeto[$i]->id_arquivo)->first();
+                // $usuario->img = $arquivo->caminho . $arquivo->nome_criptografado . ".png"; 
+                $projeto[$i]->img = $arquivo->caminho . $arquivo->nome_criptografado; 
+            }
+            else {
+                $projeto[$i]->img = null;
+            }
+        }
 
         return response($projeto, 200);
     }

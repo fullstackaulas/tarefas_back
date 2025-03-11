@@ -190,3 +190,4 @@ CREATE TABLE `fullstack_tarefas`.`projeto_user` (`user_id` INT NOT NULL , `proje
 CREATE TABLE `fullstack_tarefas`.`arquivos` (`id` INT NOT NULL AUTO_INCREMENT , `nome_original` VARCHAR(256) NOT NULL , `nome_criptografado` VARCHAR(256) NOT NULL , `caminho` VARCHAR(256) NOT NULL , `created_by` INT NOT NULL , `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_by` INT NULL , `updated_at` DATETIME on update CURRENT_TIMESTAMP NULL , `deleted_by` INT NULL , `deleted_at` DATETIME NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 ALTER TABLE `users` ADD `id_arquivo` INT NULL AFTER `id`;
+ALTER TABLE `projetos` ADD `id_arquivo` INT NULL AFTER `id`;
