@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\Arquivos;
 
 use Illuminate\Http\Request;
 
@@ -18,6 +19,7 @@ class UsuariosController extends Controller
 
         $usuario = new User();
         $usuario->email = $request->email;
+        $usuario->id_arquivo         = $request->id_arquivo;
         $usuario->name = $request->name;
         $usuario->password = bcrypt($request->password);
 
@@ -37,11 +39,11 @@ class UsuariosController extends Controller
 
 
         $usuario = new User();
-        $usuario->email = $request->email;
-        $usuario->name = $request->name;
-        $usuario->password = bcrypt($request->password);
-
-        $usuario->created_by = 0;
+        $usuario->id_arquivo         = $request->id_arquivo;
+        $usuario->email              = $request->email;
+        $usuario->name               = $request->name;
+        $usuario->password           = bcrypt($request->password);
+        $usuario->created_by         = 0;
         $usuario->save();
 
         return response($usuario, 201);
@@ -62,7 +64,19 @@ class UsuariosController extends Controller
 
     public function listar()
     {
-        $usuario = User::select('id', 'name', 'email')->get();
+        $usuario = User::select('id', 'name', 'email', 'id_arquivo')->get();
+
+
+        for($i=0;$i<count($usuario);$i++){
+            if(isset($usuario[$i]->id_arquivo) && $usuario[$i]->id_arquivo != null ){
+                $arquivo = Arquivos::where('id', $usuario[$i]->id_arquivo)->first();
+                // $usuario->img = $arquivo->caminho . $arquivo->nome_criptografado . ".png"; 
+                $usuario[$i]->img = $arquivo->caminho . $arquivo->nome_criptografado; 
+            }
+            else {
+                $usuario[$i]->img = null;
+            }
+        }
 
         return response($usuario, 200);
 
@@ -91,6 +105,8 @@ class UsuariosController extends Controller
         $usuario = User::where('id', $id)->first();
         $usuario->email = $request->email;
         $usuario->name = $request->name;
+        $usuario->id_arquivo = $request->id_arquivo;
+
         $usuario->password = bcrypt($request->password);
         $usuario->updated_by = auth()->id();
         $usuario->save();
@@ -109,6 +125,10 @@ class UsuariosController extends Controller
     
         if(isset($request->name))
             $usuario->name = $request->name;
+
+        if(isset($request->id_arquivo))
+            $usuario->id_arquivo = $request->id_arquivo;
+
 
         if(isset($request->password))
             $usuario->password = bcrypt($request->password);

@@ -37,7 +37,7 @@ class ArquivosController extends Controller
 
 
         } else {
-            dd($request);
+
             return response('Erro', '422');
         }
     }
