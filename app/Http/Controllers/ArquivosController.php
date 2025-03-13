@@ -65,6 +65,49 @@ class ArquivosController extends Controller
     }
 
 
+
+
+    // public static function getOne($id)
+    // {
+    //     $arquivo = Arquivos::where('id', $id)->first();
+
+
+    //     $arquivo->data = base64_encode(Storage::get('propostas/' . $arquivo->id_proposta .  '/' . $arquivo->nome));
+
+
+    //     return $arquivo;
+    // }
+
+    public function downloadDeVerdade($id)
+    {
+        $arquivo = Arquivos::where('id', $id)->first();
+
+        if ($arquivo == null) {
+            return response('Bd não existe', 404);
+        }
+
+        $caminho = $arquivo->caminho . $arquivo->nome_criptografado;
+
+
+        if (!Storage::fileExists($caminho)) {
+            return response('Arquivo não existe', 404);
+        }
+
+        $caminho = storage_path('app/') . $arquivo->caminho . $arquivo->nome_criptografado;
+        $nomeOriginal = $arquivo->nome_original;
+
+
+        $arquivo->data = base64_encode(Storage::get($arquivo->caminho . $arquivo->nome_criptografado));
+        // $arquivo->data = base64_encode(Storage::get('propostas/' . $arquivo->id_proposta .  '/' . $arquivo->nome));
+        $info = pathinfo($nomeOriginal);
+        $arquivo->nome = $info['filename']; 
+        $arquivo->extensao = $info['extension']; 
+
+        return response($arquivo, 200);
+
+    }
+
+
     // public function deletar($id)
     // {
     //     $arquivo = Arquivos::where('id', $id)->first();

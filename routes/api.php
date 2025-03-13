@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function(){
     Route::prefix('arquivos')->group(function(){
         Route::post('salvar', [ArquivosController::class, 'salvarArquivo']);
         Route::get('{id}', [ArquivosController::class, 'download']);
+        Route::get('{id}/download', [ArquivosController::class, 'downloadDeVerdade']);
         Route::delete('{id}', [ArquivosController::class, 'deletarDeVerdade']);
         // Route::delete('deletarArquivo/{id}', [ArquivosController::class, 'deletar']);
     });

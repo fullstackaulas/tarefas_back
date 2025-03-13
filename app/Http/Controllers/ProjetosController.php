@@ -70,6 +70,16 @@ class ProjetosController extends Controller
         $colaboradores = ProjetoUser::select('user_id')->where('projeto_id', $id)->get();
 
         $projeto->colaboradores = User::select('id','name', 'email')->whereIn('id', $colaboradores)->get();
+
+
+
+
+        
+
+
+
+
+
         return response($projeto, 200);
 
     }
