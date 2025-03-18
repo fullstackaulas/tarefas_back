@@ -88,6 +88,8 @@ class UsuariosController extends Controller
 
     public function deletar($id)
     {
+        $this->temPermissao(['administrador']);
+
         $usuario = User::where('id', $id)->first();
 
         if ($usuario == null)
