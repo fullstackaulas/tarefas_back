@@ -191,3 +191,5 @@ CREATE TABLE `fullstack_tarefas`.`arquivos` (`id` INT NOT NULL AUTO_INCREMENT , 
 
 ALTER TABLE `users` ADD `id_arquivo` INT NULL AFTER `id`;
 ALTER TABLE `projetos` ADD `id_arquivo` INT NULL AFTER `id`;
+
+ALTER TABLE `users` ADD `permissao` ENUM('administrador','usuario') NOT NULL DEFAULT 'usuario' AFTER `remember_token`;

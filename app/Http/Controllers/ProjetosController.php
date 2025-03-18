@@ -34,7 +34,7 @@ class ProjetosController extends Controller
         if (isset($request->prioridade))
             $projeto->prioridade = $request->prioridade;
 
-        if (isset($request->dataDeInicio)) 
+        if (isset($request->dataDeInicio))
             $projeto->dataDeInicio = static::javascriptDateToPhpDate($request->dataDeInicio);
 
         if (isset($request->dataDeConclusao))
@@ -66,15 +66,15 @@ class ProjetosController extends Controller
             return response('', 404);
 
         $projeto->tarefas = Tarefas::select('id', 'nome', 'prioridade', 'status', 'created_at')->where('id_projeto', $projeto->id)->get();
-        
+
         $colaboradores = ProjetoUser::select('user_id')->where('projeto_id', $id)->get();
 
-        $projeto->colaboradores = User::select('id','name', 'email')->whereIn('id', $colaboradores)->get();
+        $projeto->colaboradores = User::select('id', 'name', 'email')->whereIn('id', $colaboradores)->get();
 
 
 
 
-        
+
 
 
 
@@ -86,22 +86,26 @@ class ProjetosController extends Controller
 
     public function listar()
     {
-        $projetosMencionados = ProjetoUser::select('projeto_id')
-        ->where('user_id', auth()->id())
-        ->get();
+
+        if (auth()->user()->permissao == 'administrador') {
+            $projeto = Projetos::get();
+        } else {
+            $projetosMencionados = ProjetoUser::select('projeto_id')
+                ->where('user_id', auth()->id())
+                ->get();
 
 
-        $projeto = Projetos::where('created_by', auth()->id())
-        ->orWhereIn('id', $projetosMencionados)
-        ->get();
+            $projeto = Projetos::where('created_by', auth()->id())
+                ->orWhereIn('id', $projetosMencionados)
+                ->get();
+        }
 
-        for($i=0;$i<count($projeto);$i++){
-            if(isset($projeto[$i]->id_arquivo) && $projeto[$i]->id_arquivo != null ){
+        for ($i = 0; $i < count($projeto); $i++) {
+            if (isset($projeto[$i]->id_arquivo) && $projeto[$i]->id_arquivo != null) {
                 $arquivo = Arquivos::where('id', $projeto[$i]->id_arquivo)->first();
                 // $usuario->img = $arquivo->caminho . $arquivo->nome_criptografado . ".png"; 
-                $projeto[$i]->img = $arquivo->caminho . $arquivo->nome_criptografado; 
-            }
-            else {
+                $projeto[$i]->img = $arquivo->caminho . $arquivo->nome_criptografado;
+            } else {
                 $projeto[$i]->img = null;
             }
         }
@@ -139,8 +143,8 @@ class ProjetosController extends Controller
         if (isset($request->dataDeConclusao))
             $projeto->dataDeConclusao = static::javascriptDateToPhpDate($request->dataDeConclusao);
 
-        
-        
+
+
         if (isset($request->pontos))
             $projeto->pontos = $request->pontos;
         if (isset($request->status))

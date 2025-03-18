@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArquivosController;
+use App\Http\Controllers\TestarTryCatchController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ProjetosController;
 use App\Http\Controllers\TarefasController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\AuthController;
 
 Route::post('usuarios/cadastrarNovo', [UsuariosController::class, 'cadastrarNovo']);
 
+Route::get('testarTryCatch', [TestarTryCatchController::class, 'testarTryCatch']);
 
 
 
@@ -22,7 +24,7 @@ Route::post('usuarios/cadastrarNovo', [UsuariosController::class, 'cadastrarNovo
 Route::middleware('auth:api')->group(function(){
     
     Route::get('logout', [AuthController::class, 'logout']);
-    Route::get('me', [AuthController::class, 'me'])->middleware('auth:api');
+    Route::get('me', [AuthController::class, 'me']);
 
     Route::prefix('arquivos')->group(function(){
         Route::post('salvar', [ArquivosController::class, 'salvarArquivo']);

@@ -64,6 +64,10 @@ class UsuariosController extends Controller
 
     public function listar()
     {
+        $this->temPermissao(['usuario']);
+       
+
+
         $usuario = User::select('id', 'name', 'email', 'id_arquivo')->get();
 
 
