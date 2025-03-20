@@ -60,11 +60,20 @@ class ProjetosController extends Controller
 
     public function consultar($id)
     {
-        $projeto = Projetos::where('id', $id)->where('created_by', auth()->id())->first();
+        
+        
+        if (auth()->user()->permissao == 'administrador') {
+            $projeto = Projetos::where('id', $id)->first();
+           
+        } else {
+            $projeto = Projetos::where('id', $id)->where('created_by', auth()->id())->first();
+
+
+        }     
         //depois permitiremos a consulta de quem estiver participando do projeto;
         if ($projeto == null)
             return response('', 404);
-
+        
         $projeto->tarefas = Tarefas::select('id', 'nome', 'prioridade', 'status', 'created_at')->where('id_projeto', $projeto->id)->get();
 
         $colaboradores = ProjetoUser::select('user_id')->where('projeto_id', $id)->get();
